@@ -19,6 +19,10 @@ public class RNFetchBlobPackage implements ReactPackage {
         modules.add(new RNFetchBlob(reactContext));
         return modules;
     }
+    
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+        return Collections.emptyList();
+    }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
