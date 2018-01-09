@@ -78,23 +78,22 @@ public class RNFetchBlobFS {
                 dir.mkdirs();
             FileOutputStream fout = new FileOutputStream(f, append);
             // write data from a file
-            if(encoding.equalsIgnoreCase(RNFetchBlobConst.DATA_ENCODE_URI)) {
-                try {
+            try {
+                if(encoding.equalsIgnoreCase(RNFetchBlobConst.DATA_ENCODE_URI)) {
                     written = writeFileToFileWithOffset(data, path, 0, append);
-                    promise.resolve(written);
                 }
-                catch(Exception ex) {
-                    ex.printStackTrace();
-                    promise.reject("RNfetchBlob writeFileError", ex.getMessage());
+                else {
+                    byte[] bytes = stringToBytes(data, encoding);
+                    fout.write(bytes);
+                    written = bytes.length;
                 }
+                promise.resolve(written);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+                promise.reject("RNfetchBlob writeFileError", ex.getMessage());
+            } finally {
+                fout.close();
             }
-            else {
-                byte[] bytes = stringToBytes(data, encoding);
-                fout.write(bytes);
-                written = bytes.length;
-            }
-            fout.close();
-            promise.resolve(written);
         } catch (Exception e) {
             promise.reject("RNFetchBlob writeFileError", e.getLocalizedMessage());
         }
