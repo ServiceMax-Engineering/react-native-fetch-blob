@@ -20,8 +20,10 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.File;
@@ -40,6 +42,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -591,16 +594,19 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
         info.putString("state", "2");
         info.putString("taskId", this.taskId);
         info.putBoolean("timeout", timeout);
-        WritableMap headers = Arguments.createMap();
+        WritableArray headers = Arguments.createArray();
         for(int i =0;i< resp.headers().size();i++) {
-            headers.putString(resp.headers().name(i), resp.headers().value(i));
+            headers.pushArray(new WritableNativeArray(Arrays.asList(
+                resp.headers().name(i),
+                resp.headers().value(i)
+            )));
         }
         WritableArray redirectList = Arguments.createArray();
         for(String r : redirects) {
             redirectList.pushString(r);
         }
         info.putArray("redirects", redirectList);
-        info.putMap("headers", headers);
+        info.putArray("headers", headers);
         Headers h = resp.headers();
         if(isBlobResp) {
             info.putString("respType", "blob");
