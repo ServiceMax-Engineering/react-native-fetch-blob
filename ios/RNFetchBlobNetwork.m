@@ -207,9 +207,9 @@ NSOperationQueue *taskQueue;
     {
         defaultConfigObject.timeoutIntervalForRequest = timeout/1000;
     }
-    
+
     defaultConfigObject.sessionSendsLaunchEvents = YES;
-    
+
     defaultConfigObject.HTTPMaximumConnectionsPerHost = 10;
     session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:self delegateQueue:taskQueue];
     if(path != nil || [self.options valueForKey:CONFIG_USE_TEMP]!= nil)
@@ -247,7 +247,7 @@ NSOperationQueue *taskQueue;
     } else {
         task = [session dataTaskWithRequest:req];
     }
-    
+
     [taskTable setObject:task forKey:taskId];
     [task resume];
 
@@ -640,7 +640,7 @@ NSOperationQueue *taskQueue;
     [cookieStr appendString:cookie.name];
     [cookieStr appendString:@"="];
     [cookieStr appendString:cookie.value];
-    
+
     if(cookie.expiresDate == nil) {
         [cookieStr appendString:@"; max-age=0"];
     }
@@ -651,18 +651,18 @@ NSOperationQueue *taskQueue;
         NSString *strDate = [dateFormatter stringFromDate:cookie.expiresDate];
         [cookieStr appendString:strDate];
     }
-    
-    
+
+
     [cookieStr appendString:@"; domain="];
     [cookieStr appendString: [cookie domain]];
     [cookieStr appendString:@"; path="];
     [cookieStr appendString:cookie.path];
-    
-    
+
+
     if (cookie.isSecure) {
         [cookieStr appendString:@"; secure"];
     }
-    
+
     if (cookie.isHTTPOnly) {
         [cookieStr appendString:@"; httponly"];
     }

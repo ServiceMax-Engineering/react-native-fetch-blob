@@ -70,8 +70,13 @@
                 [mheaders setValue:@"100-continue" forKey:@"Expect"];
                 // appaned boundary to content-type
                 [mheaders setValue:[NSString stringWithFormat:@"multipart/form-data; charset=utf-8; boundary=%@", boundary] forKey:@"content-type"];
+
                 [request setHTTPMethod: method];
                 [request setAllHTTPHeaderFields:mheaders];
+
+                // disable ios cookie handling (it's trash!)
+                [request setHTTPShouldHandleCookies:NO];
+
                 onComplete(request, [formData length]);
             }
         }];
@@ -117,7 +122,7 @@
                     orgPath = [RNFetchBlobFS getPathOfAsset:orgPath];
                     if([orgPath hasPrefix:AL_PREFIX])
                     {
-                        
+
                         [RNFetchBlobFS readFile:orgPath encoding:nil onComplete:^(NSData *content, NSString * err) {
                             if(err != nil)
                             {
@@ -131,7 +136,7 @@
                                 onComplete(request, [content length]);
                             }
                         }];
-                        
+
                         return;
                     }
                     size = [[[NSFileManager defaultManager] attributesOfItemAtPath:orgPath error:nil] fileSize];
@@ -173,6 +178,9 @@
 
         [request setHTTPMethod: method];
         [request setAllHTTPHeaderFields:mheaders];
+
+        // disable ios cookie handling (it's trash!)
+        [request setHTTPShouldHandleCookies:NO];
 
         onComplete(request, size);
     });
