@@ -12,7 +12,6 @@ import android.util.Base64;
 
 import com.RNFetchBlob.Response.RNFetchBlobDefaultResp;
 import com.RNFetchBlob.Response.RNFetchBlobFileResp;
-import com.RNFetchBlob.Utils.RNFBCookieJar;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -30,9 +29,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -48,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
-import okhttp3.CookieJar;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -343,7 +338,6 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
 
 
             final Request req = builder.build();
-            clientBuilder.cookieJar(new RNFBCookieJar());
             clientBuilder.addNetworkInterceptor(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
@@ -596,10 +590,10 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
         info.putBoolean("timeout", timeout);
         WritableArray headers = Arguments.createArray();
         for(int i =0;i< resp.headers().size();i++) {
-            headers.pushArray(new WritableNativeArray(Arrays.asList(
-                resp.headers().name(i),
-                resp.headers().value(i)
-            )));
+            WritableArray headerItem = Arguments.createArray();
+            headerItem.pushString(resp.headers().name(i));
+            headerItem.pushString(resp.headers().value(i));
+            headers.pushArray(headerItem);
         }
         WritableArray redirectList = Arguments.createArray();
         for(String r : redirects) {
