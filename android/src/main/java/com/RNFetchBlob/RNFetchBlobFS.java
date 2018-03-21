@@ -100,18 +100,23 @@ public class RNFetchBlobFS {
     }
 
     private static int writeFileToFileWithOffset(String source, String dest, int offset, boolean append) throws IOException {
-
         source = normalizePath(source);
-        FileOutputStream fout = new FileOutputStream(dest, append);
-        FileInputStream fin = new FileInputStream(source);
-        byte [] buffer = new byte [10240];
-        int read;
+        FileChannel sourceChannel = null;
+        FileChannel destChannel = null;
+
         int written = 0;
-        while((read = fin.read(buffer)) > 0) {
-            fout.write(buffer, offset + written, read);
-            written += read;
+        try {
+            sourceChannel = new FileInputStream(source).getChannel();
+            destChannel = new FileOutputStream(dest, append).getChannel();
+            if (append) {
+                destChannel.position( destChannel.size() );
+            }
+            written += sourceChannel.transferTo(offset, sourceChannel.size(), destChannel);
+        } finally {
+            sourceChannel.close();
+            destChannel.close();
         }
-        fin.close();
+
         return written;
     }
 
