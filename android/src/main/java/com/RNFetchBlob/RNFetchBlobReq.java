@@ -24,6 +24,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -235,6 +236,8 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
                 clientBuilder = RNFetchBlobUtils.getUnsafeOkHttpClient();
             } else {
                 clientBuilder = new OkHttpClient.Builder();
+                // SSL Pinning - Copy over certificate pinner from current client
+                clientBuilder.certificatePinner(OkHttpClientProvider.getOkHttpClient().certificatePinner());
             }
 
             final Request.Builder builder = new Request.Builder();

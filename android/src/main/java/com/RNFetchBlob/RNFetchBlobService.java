@@ -122,6 +122,8 @@ public class RNFetchBlobService extends IntentService implements ProgressListene
         OkHttpClient client = new OkHttpClient.Builder()
                 .writeTimeout(24, TimeUnit.HOURS)
                 .readTimeout(24, TimeUnit.HOURS)
+                // SSL Pinning - Copy over certificate pinner from current client
+                .certificatePinner(OkHttpClientProvider.getOkHttpClient().certificatePinner())
                 .build();
 
         final Call call =  client.newCall(builder.build());
