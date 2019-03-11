@@ -656,8 +656,15 @@ public class RNFetchBlobReq extends BroadcastReceiver implements Runnable {
     }
 
     private void emitStateEvent(WritableMap args) {
-        RNFetchBlob.RCTContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(RNFetchBlobConst.EVENT_HTTP_STATE, args);
+        try {
+            RNFetchBlob.RCTContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(RNFetchBlobConst.EVENT_HTTP_STATE, args);
+        }
+        catch (Exception ex) {
+            // Fix: Crash, Tried to access a JS module before the React instance was fully set up.
+            //   Calls to ReactContext#getJSModule should only happen once initialize() has been called on your native module.
+            ex.printStackTrace();
+        }
     }
 
     @Override
