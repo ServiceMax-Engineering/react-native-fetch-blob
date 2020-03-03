@@ -256,6 +256,8 @@ NSOperationQueue *taskQueue;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     __block UIApplication * app = [UIApplication sharedApplication];
 
+     
+    /* // commenting below code as it causes app crash in background mode after 30 secs in iOS 13.3
     // #115 handling task expired when application entering backgound for a long time
     UIBackgroundTaskIdentifier tid = [app beginBackgroundTaskWithName:taskId expirationHandler:^{
         NSLog([NSString stringWithFormat:@"session %@ expired", taskId ]);
@@ -263,6 +265,7 @@ NSOperationQueue *taskQueue;
         // comment out this one as it might cause app crash #271
 //        [app endBackgroundTask:tid];
     }];
+     */
 
 }
 
